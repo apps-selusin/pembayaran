@@ -282,8 +282,6 @@ class ct00_sekolah_delete extends ct00_sekolah {
 			$Security->UserID_Loaded();
 		}
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->Nomor_Induk->SetVisibility();
 		$this->Nama->SetVisibility();
 
@@ -501,11 +499,6 @@ class ct00_sekolah_delete extends ct00_sekolah {
 		// Nama
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
 
 			// Nomor_Induk
 			$this->Nomor_Induk->LinkCustomAttributes = "";
@@ -769,9 +762,6 @@ $t00_sekolah_delete->ShowMessage();
 <?php echo $t00_sekolah->TableCustomInnerHtml ?>
 	<thead>
 	<tr class="ewTableHeader">
-<?php if ($t00_sekolah->id->Visible) { // id ?>
-		<th><span id="elh_t00_sekolah_id" class="t00_sekolah_id"><?php echo $t00_sekolah->id->FldCaption() ?></span></th>
-<?php } ?>
 <?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 		<th><span id="elh_t00_sekolah_Nomor_Induk" class="t00_sekolah_Nomor_Induk"><?php echo $t00_sekolah->Nomor_Induk->FldCaption() ?></span></th>
 <?php } ?>
@@ -799,14 +789,6 @@ while (!$t00_sekolah_delete->Recordset->EOF) {
 	$t00_sekolah_delete->RenderRow();
 ?>
 	<tr<?php echo $t00_sekolah->RowAttributes() ?>>
-<?php if ($t00_sekolah->id->Visible) { // id ?>
-		<td<?php echo $t00_sekolah->id->CellAttributes() ?>>
-<span id="el<?php echo $t00_sekolah_delete->RowCnt ?>_t00_sekolah_id" class="t00_sekolah_id">
-<span<?php echo $t00_sekolah->id->ViewAttributes() ?>>
-<?php echo $t00_sekolah->id->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 		<td<?php echo $t00_sekolah->Nomor_Induk->CellAttributes() ?>>
 <span id="el<?php echo $t00_sekolah_delete->RowCnt ?>_t00_sekolah_Nomor_Induk" class="t00_sekolah_Nomor_Induk">

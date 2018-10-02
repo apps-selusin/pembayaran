@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<configuration date="2018/10/02" author="e.World Technology Ltd.">
-  <project id="{DCB8868F-2909-4349-AFEF-80A438B4A06C}" file="" name="pembayaran_prj" product="PHPMaker" version="13.0" datetime="2018/10/02 23:44:43" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+<configuration date="2018/10/03" author="e.World Technology Ltd.">
+  <project id="{DCB8868F-2909-4349-AFEF-80A438B4A06C}" file="" name="pembayaran_prj" product="PHPMaker" version="13.0" datetime="2018/10/03 00:02:46" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="t00_sekolah" name="t00_sekolah" caption="Sekolah" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t01_kelas" name="t01_kelas" caption="Kelas" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t02_siswa" name="t02_siswa" caption="Siswa" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />

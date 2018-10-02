@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2018/10/2" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2018/10/3" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -583,9 +583,6 @@
   <project>
     <phrase id="bodytitle" value="Pembayaran" />
     <phrase id="footertext" value="&amp;copy;2018 Selaras Solusindo. All rights reserved." />
-    <menu id="9">
-      <phrase id="menutext" value="User Log" />
-    </menu>
     <menu id="4">
       <phrase id="menutext" value="Home" />
     </menu>
@@ -600,6 +597,9 @@
     </menu>
     <menu id="3">
       <phrase id="menutext" value="Siswa" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="User Log" />
     </menu>
     <menu id="5">
       <phrase id="menutext" value="t 96 employees" />
@@ -628,7 +628,7 @@
         <phrase id="fldcaption" value="id" />
       </field>
       <field id="sekolah_id">
-        <phrase id="fldcaption" value="sekolah id" />
+        <phrase id="fldcaption" value="Sekolah" />
       </field>
       <field id="nama">
         <phrase id="fldcaption" value="Nama" />

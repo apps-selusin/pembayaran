@@ -285,8 +285,6 @@ class ct00_sekolah_edit extends ct00_sekolah {
 		// Create form object
 		$objForm = new cFormObj();
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->Nomor_Induk->SetVisibility();
 		$this->Nama->SetVisibility();
 
@@ -496,14 +494,14 @@ class ct00_sekolah_edit extends ct00_sekolah {
 
 		// Load from form
 		global $objForm;
-		if (!$this->id->FldIsDetailKey)
-			$this->id->setFormValue($objForm->GetValue("x_id"));
 		if (!$this->Nomor_Induk->FldIsDetailKey) {
 			$this->Nomor_Induk->setFormValue($objForm->GetValue("x_Nomor_Induk"));
 		}
 		if (!$this->Nama->FldIsDetailKey) {
 			$this->Nama->setFormValue($objForm->GetValue("x_Nama"));
 		}
+		if (!$this->id->FldIsDetailKey)
+			$this->id->setFormValue($objForm->GetValue("x_id"));
 	}
 
 	// Restore form values
@@ -586,11 +584,6 @@ class ct00_sekolah_edit extends ct00_sekolah {
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
 
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
-
 			// Nomor_Induk
 			$this->Nomor_Induk->LinkCustomAttributes = "";
 			$this->Nomor_Induk->HrefValue = "";
@@ -601,12 +594,6 @@ class ct00_sekolah_edit extends ct00_sekolah {
 			$this->Nama->HrefValue = "";
 			$this->Nama->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
-
-			// id
-			$this->id->EditAttrs["class"] = "form-control";
-			$this->id->EditCustomAttributes = "";
-			$this->id->EditValue = $this->id->CurrentValue;
-			$this->id->ViewCustomAttributes = "";
 
 			// Nomor_Induk
 			$this->Nomor_Induk->EditAttrs["class"] = "form-control";
@@ -621,12 +608,8 @@ class ct00_sekolah_edit extends ct00_sekolah {
 			$this->Nama->PlaceHolder = ew_RemoveHtml($this->Nama->FldCaption());
 
 			// Edit refer script
-			// id
-
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-
 			// Nomor_Induk
+
 			$this->Nomor_Induk->LinkCustomAttributes = "";
 			$this->Nomor_Induk->HrefValue = "";
 
@@ -936,18 +919,6 @@ $t00_sekolah_edit->ShowMessage();
 <input type="hidden" name="modal" value="1">
 <?php } ?>
 <div>
-<?php if ($t00_sekolah->id->Visible) { // id ?>
-	<div id="r_id" class="form-group">
-		<label id="elh_t00_sekolah_id" class="col-sm-2 control-label ewLabel"><?php echo $t00_sekolah->id->FldCaption() ?></label>
-		<div class="col-sm-10"><div<?php echo $t00_sekolah->id->CellAttributes() ?>>
-<span id="el_t00_sekolah_id">
-<span<?php echo $t00_sekolah->id->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $t00_sekolah->id->EditValue ?></p></span>
-</span>
-<input type="hidden" data-table="t00_sekolah" data-field="x_id" name="x_id" id="x_id" value="<?php echo ew_HtmlEncode($t00_sekolah->id->CurrentValue) ?>">
-<?php echo $t00_sekolah->id->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
 <?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 	<div id="r_Nomor_Induk" class="form-group">
 		<label id="elh_t00_sekolah_Nomor_Induk" for="x_Nomor_Induk" class="col-sm-2 control-label ewLabel"><?php echo $t00_sekolah->Nomor_Induk->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
@@ -969,6 +940,7 @@ $t00_sekolah_edit->ShowMessage();
 	</div>
 <?php } ?>
 </div>
+<input type="hidden" data-table="t00_sekolah" data-field="x_id" name="x_id" id="x_id" value="<?php echo ew_HtmlEncode($t00_sekolah->id->CurrentValue) ?>">
 <?php if (!$t00_sekolah_edit->IsModal) { ?>
 <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-10">

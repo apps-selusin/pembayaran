@@ -370,8 +370,6 @@ class ct00_sekolah_list extends ct00_sekolah {
 
 		// Set up list options
 		$this->SetupListOptions();
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->Nomor_Induk->SetVisibility();
 		$this->Nama->SetVisibility();
 
@@ -936,7 +934,6 @@ class ct00_sekolah_list extends ct00_sekolah {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = ew_StripSlashes(@$_GET["order"]);
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->Nomor_Induk); // Nomor_Induk
 			$this->UpdateSort($this->Nama); // Nama
 			$this->setStartRecordNumber(1); // Reset start position
@@ -971,7 +968,6 @@ class ct00_sekolah_list extends ct00_sekolah {
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
-				$this->id->setSort("");
 				$this->Nomor_Induk->setSort("");
 				$this->Nama->setSort("");
 			}
@@ -1032,6 +1028,14 @@ class ct00_sekolah_list extends ct00_sekolah {
 		$item->ShowInDropDown = FALSE;
 		$item->ShowInButtonGroup = FALSE;
 
+		// "sequence"
+		$item = &$this->ListOptions->Add("sequence");
+		$item->CssStyle = "white-space: nowrap;";
+		$item->Visible = TRUE;
+		$item->OnLeft = TRUE; // Always on left
+		$item->ShowInDropDown = FALSE;
+		$item->ShowInButtonGroup = FALSE;
+
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
 		$this->ListOptions->UseDropDownButton = FALSE;
@@ -1052,6 +1056,10 @@ class ct00_sekolah_list extends ct00_sekolah {
 	function RenderListOptions() {
 		global $Security, $Language, $objForm;
 		$this->ListOptions->LoadDefault();
+
+		// "sequence"
+		$oListOpt = &$this->ListOptions->Items["sequence"];
+		$oListOpt->Body = ew_FormatSeqNo($this->RecCnt);
 
 		// "view"
 		$oListOpt = &$this->ListOptions->Items["view"];
@@ -1491,11 +1499,6 @@ class ct00_sekolah_list extends ct00_sekolah {
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
 
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
-
 			// Nomor_Induk
 			$this->Nomor_Induk->LinkCustomAttributes = "";
 			$this->Nomor_Induk->HrefValue = "";
@@ -1813,15 +1816,6 @@ $t00_sekolah_list->RenderListOptions();
 // Render list options (header, left)
 $t00_sekolah_list->ListOptions->Render("header", "left");
 ?>
-<?php if ($t00_sekolah->id->Visible) { // id ?>
-	<?php if ($t00_sekolah->SortUrl($t00_sekolah->id) == "") { ?>
-		<th data-name="id"><div id="elh_t00_sekolah_id" class="t00_sekolah_id"><div class="ewTableHeaderCaption"><?php echo $t00_sekolah->id->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t00_sekolah->SortUrl($t00_sekolah->id) ?>',1);"><div id="elh_t00_sekolah_id" class="t00_sekolah_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t00_sekolah->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t00_sekolah->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t00_sekolah->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-        </div></div></th>
-	<?php } ?>
-<?php } ?>		
 <?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 	<?php if ($t00_sekolah->SortUrl($t00_sekolah->Nomor_Induk) == "") { ?>
 		<th data-name="Nomor_Induk"><div id="elh_t00_sekolah_Nomor_Induk" class="t00_sekolah_Nomor_Induk"><div class="ewTableHeaderCaption"><?php echo $t00_sekolah->Nomor_Induk->FldCaption() ?></div></div></th>
@@ -1905,21 +1899,13 @@ while ($t00_sekolah_list->RecCnt < $t00_sekolah_list->StopRec) {
 // Render list options (body, left)
 $t00_sekolah_list->ListOptions->Render("body", "left", $t00_sekolah_list->RowCnt);
 ?>
-	<?php if ($t00_sekolah->id->Visible) { // id ?>
-		<td data-name="id"<?php echo $t00_sekolah->id->CellAttributes() ?>>
-<span id="el<?php echo $t00_sekolah_list->RowCnt ?>_t00_sekolah_id" class="t00_sekolah_id">
-<span<?php echo $t00_sekolah->id->ViewAttributes() ?>>
-<?php echo $t00_sekolah->id->ListViewValue() ?></span>
-</span>
-<a id="<?php echo $t00_sekolah_list->PageObjName . "_row_" . $t00_sekolah_list->RowCnt ?>"></a></td>
-	<?php } ?>
 	<?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 		<td data-name="Nomor_Induk"<?php echo $t00_sekolah->Nomor_Induk->CellAttributes() ?>>
 <span id="el<?php echo $t00_sekolah_list->RowCnt ?>_t00_sekolah_Nomor_Induk" class="t00_sekolah_Nomor_Induk">
 <span<?php echo $t00_sekolah->Nomor_Induk->ViewAttributes() ?>>
 <?php echo $t00_sekolah->Nomor_Induk->ListViewValue() ?></span>
 </span>
-</td>
+<a id="<?php echo $t00_sekolah_list->PageObjName . "_row_" . $t00_sekolah_list->RowCnt ?>"></a></td>
 	<?php } ?>
 	<?php if ($t00_sekolah->Nama->Visible) { // Nama ?>
 		<td data-name="Nama"<?php echo $t00_sekolah->Nama->CellAttributes() ?>>

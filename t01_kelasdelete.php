@@ -282,8 +282,6 @@ class ct01_kelas_delete extends ct01_kelas {
 			$Security->UserID_Loaded();
 		}
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->sekolah_id->SetVisibility();
 		$this->Nama->SetVisibility();
 
@@ -495,17 +493,32 @@ class ct01_kelas_delete extends ct01_kelas {
 		$this->id->ViewCustomAttributes = "";
 
 		// sekolah_id
-		$this->sekolah_id->ViewValue = $this->sekolah_id->CurrentValue;
+		if (strval($this->sekolah_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->sekolah_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `Nomor_Induk` AS `DispFld`, `Nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t00_sekolah`";
+		$sWhereWrk = "";
+		$this->sekolah_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->sekolah_id, $sWhereWrk); // Call Lookup selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->sekolah_id->ViewValue = $this->sekolah_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->sekolah_id->ViewValue = $this->sekolah_id->CurrentValue;
+			}
+		} else {
+			$this->sekolah_id->ViewValue = NULL;
+		}
 		$this->sekolah_id->ViewCustomAttributes = "";
 
 		// Nama
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
 
 			// sekolah_id
 			$this->sekolah_id->LinkCustomAttributes = "";
@@ -551,6 +564,7 @@ class ct01_kelas_delete extends ct01_kelas {
 		}
 		$rows = ($rs) ? $rs->GetRows() : array();
 		$conn->BeginTrans();
+		if ($this->AuditTrailOnDelete) $this->WriteAuditTrailDummy($Language->Phrase("BatchDeleteBegin")); // Batch delete begin
 
 		// Clone old rows
 		$rsold = $rows;
@@ -593,8 +607,10 @@ class ct01_kelas_delete extends ct01_kelas {
 		}
 		if ($DeleteRows) {
 			$conn->CommitTrans(); // Commit the changes
+			if ($this->AuditTrailOnDelete) $this->WriteAuditTrailDummy($Language->Phrase("BatchDeleteSuccess")); // Batch delete success
 		} else {
 			$conn->RollbackTrans(); // Rollback changes
+			if ($this->AuditTrailOnDelete) $this->WriteAuditTrailDummy($Language->Phrase("BatchDeleteRollback")); // Batch delete rollback
 		}
 
 		// Call Row Deleted event
@@ -734,8 +750,9 @@ ft01_kelasdelete.ValidateRequired = false;
 <?php } ?>
 
 // Dynamic selection lists
-// Form object for search
+ft01_kelasdelete.Lists["x_sekolah_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_Nomor_Induk","x_Nama","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t00_sekolah"};
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -766,9 +783,6 @@ $t01_kelas_delete->ShowMessage();
 <?php echo $t01_kelas->TableCustomInnerHtml ?>
 	<thead>
 	<tr class="ewTableHeader">
-<?php if ($t01_kelas->id->Visible) { // id ?>
-		<th><span id="elh_t01_kelas_id" class="t01_kelas_id"><?php echo $t01_kelas->id->FldCaption() ?></span></th>
-<?php } ?>
 <?php if ($t01_kelas->sekolah_id->Visible) { // sekolah_id ?>
 		<th><span id="elh_t01_kelas_sekolah_id" class="t01_kelas_sekolah_id"><?php echo $t01_kelas->sekolah_id->FldCaption() ?></span></th>
 <?php } ?>
@@ -796,14 +810,6 @@ while (!$t01_kelas_delete->Recordset->EOF) {
 	$t01_kelas_delete->RenderRow();
 ?>
 	<tr<?php echo $t01_kelas->RowAttributes() ?>>
-<?php if ($t01_kelas->id->Visible) { // id ?>
-		<td<?php echo $t01_kelas->id->CellAttributes() ?>>
-<span id="el<?php echo $t01_kelas_delete->RowCnt ?>_t01_kelas_id" class="t01_kelas_id">
-<span<?php echo $t01_kelas->id->ViewAttributes() ?>>
-<?php echo $t01_kelas->id->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($t01_kelas->sekolah_id->Visible) { // sekolah_id ?>
 		<td<?php echo $t01_kelas->sekolah_id->CellAttributes() ?>>
 <span id="el<?php echo $t01_kelas_delete->RowCnt ?>_t01_kelas_sekolah_id" class="t01_kelas_sekolah_id">

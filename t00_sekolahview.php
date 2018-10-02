@@ -339,8 +339,6 @@ class ct00_sekolah_view extends ct00_sekolah {
 			$Security->UserID_Loaded();
 		}
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->Nomor_Induk->SetVisibility();
 		$this->Nama->SetVisibility();
 
@@ -641,11 +639,6 @@ class ct00_sekolah_view extends ct00_sekolah {
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
 
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
-
 			// Nomor_Induk
 			$this->Nomor_Induk->LinkCustomAttributes = "";
 			$this->Nomor_Induk->HrefValue = "";
@@ -850,17 +843,6 @@ $t00_sekolah_view->ShowMessage();
 <input type="hidden" name="modal" value="1">
 <?php } ?>
 <table class="table table-bordered table-striped ewViewTable">
-<?php if ($t00_sekolah->id->Visible) { // id ?>
-	<tr id="r_id">
-		<td><span id="elh_t00_sekolah_id"><?php echo $t00_sekolah->id->FldCaption() ?></span></td>
-		<td data-name="id"<?php echo $t00_sekolah->id->CellAttributes() ?>>
-<span id="el_t00_sekolah_id">
-<span<?php echo $t00_sekolah->id->ViewAttributes() ?>>
-<?php echo $t00_sekolah->id->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
 <?php if ($t00_sekolah->Nomor_Induk->Visible) { // Nomor_Induk ?>
 	<tr id="r_Nomor_Induk">
 		<td><span id="elh_t00_sekolah_Nomor_Induk"><?php echo $t00_sekolah->Nomor_Induk->FldCaption() ?></span></td>
