@@ -370,8 +370,6 @@ class ct02_siswa_list extends ct02_siswa {
 
 		// Set up list options
 		$this->SetupListOptions();
-		$this->id->SetVisibility();
-		$this->id->Visible = !$this->IsAdd() && !$this->IsCopy() && !$this->IsGridAdd();
 		$this->sekolah_id->SetVisibility();
 		$this->kelas_id->SetVisibility();
 		$this->Nomor_Induk->SetVisibility();
@@ -956,7 +954,6 @@ class ct02_siswa_list extends ct02_siswa {
 		if (@$_GET["order"] <> "") {
 			$this->CurrentOrder = ew_StripSlashes(@$_GET["order"]);
 			$this->CurrentOrderType = @$_GET["ordertype"];
-			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->sekolah_id); // sekolah_id
 			$this->UpdateSort($this->kelas_id); // kelas_id
 			$this->UpdateSort($this->Nomor_Induk); // Nomor_Induk
@@ -993,7 +990,6 @@ class ct02_siswa_list extends ct02_siswa {
 			if ($this->Command == "resetsort") {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
-				$this->id->setSort("");
 				$this->sekolah_id->setSort("");
 				$this->kelas_id->setSort("");
 				$this->Nomor_Induk->setSort("");
@@ -1056,6 +1052,14 @@ class ct02_siswa_list extends ct02_siswa {
 		$item->ShowInDropDown = FALSE;
 		$item->ShowInButtonGroup = FALSE;
 
+		// "sequence"
+		$item = &$this->ListOptions->Add("sequence");
+		$item->CssStyle = "white-space: nowrap;";
+		$item->Visible = TRUE;
+		$item->OnLeft = TRUE; // Always on left
+		$item->ShowInDropDown = FALSE;
+		$item->ShowInButtonGroup = FALSE;
+
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
 		$this->ListOptions->UseDropDownButton = FALSE;
@@ -1076,6 +1080,10 @@ class ct02_siswa_list extends ct02_siswa {
 	function RenderListOptions() {
 		global $Security, $Language, $objForm;
 		$this->ListOptions->LoadDefault();
+
+		// "sequence"
+		$oListOpt = &$this->ListOptions->Items["sequence"];
+		$oListOpt->Body = ew_FormatSeqNo($this->RecCnt);
 
 		// "view"
 		$oListOpt = &$this->ListOptions->Items["view"];
@@ -1514,11 +1522,50 @@ class ct02_siswa_list extends ct02_siswa {
 		$this->id->ViewCustomAttributes = "";
 
 		// sekolah_id
-		$this->sekolah_id->ViewValue = $this->sekolah_id->CurrentValue;
+		if (strval($this->sekolah_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->sekolah_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `Nomor_Induk` AS `DispFld`, `Nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t00_sekolah`";
+		$sWhereWrk = "";
+		$this->sekolah_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->sekolah_id, $sWhereWrk); // Call Lookup selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->sekolah_id->ViewValue = $this->sekolah_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->sekolah_id->ViewValue = $this->sekolah_id->CurrentValue;
+			}
+		} else {
+			$this->sekolah_id->ViewValue = NULL;
+		}
 		$this->sekolah_id->ViewCustomAttributes = "";
 
 		// kelas_id
-		$this->kelas_id->ViewValue = $this->kelas_id->CurrentValue;
+		if (strval($this->kelas_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->kelas_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `Nama` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t01_kelas`";
+		$sWhereWrk = "";
+		$this->kelas_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->kelas_id, $sWhereWrk); // Call Lookup selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->kelas_id->ViewValue = $this->kelas_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->kelas_id->ViewValue = $this->kelas_id->CurrentValue;
+			}
+		} else {
+			$this->kelas_id->ViewValue = NULL;
+		}
 		$this->kelas_id->ViewCustomAttributes = "";
 
 		// Nomor_Induk
@@ -1528,11 +1575,6 @@ class ct02_siswa_list extends ct02_siswa {
 		// Nama
 		$this->Nama->ViewValue = $this->Nama->CurrentValue;
 		$this->Nama->ViewCustomAttributes = "";
-
-			// id
-			$this->id->LinkCustomAttributes = "";
-			$this->id->HrefValue = "";
-			$this->id->TooltipValue = "";
 
 			// sekolah_id
 			$this->sekolah_id->LinkCustomAttributes = "";
@@ -1747,8 +1789,10 @@ ft02_siswalist.ValidateRequired = false;
 <?php } ?>
 
 // Dynamic selection lists
-// Form object for search
+ft02_siswalist.Lists["x_sekolah_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_Nomor_Induk","x_Nama","",""],"ParentFields":[],"ChildFields":["x_kelas_id"],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t00_sekolah"};
+ft02_siswalist.Lists["x_kelas_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_Nama","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t01_kelas"};
 
+// Form object for search
 var CurrentSearchForm = ft02_siswalistsrch = new ew_Form("ft02_siswalistsrch");
 </script>
 <script type="text/javascript">
@@ -1794,6 +1838,13 @@ var CurrentSearchForm = ft02_siswalistsrch = new ew_Form("ft02_siswalistsrch");
 			$t02_siswa_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
 		else
 			$t02_siswa_list->setWarningMessage($Language->Phrase("NoRecord"));
+	}
+
+	// Audit trail on search
+	if ($t02_siswa_list->AuditTrailOnSearch && $t02_siswa_list->Command == "search" && !$t02_siswa_list->RestoreSearch) {
+		$searchparm = ew_ServerVar("QUERY_STRING");
+		$searchsql = $t02_siswa_list->getSessionWhere();
+		$t02_siswa_list->WriteAuditTrailOnSearch($searchparm, $searchsql);
 	}
 $t02_siswa_list->RenderOtherOptions();
 ?>
@@ -1854,15 +1905,6 @@ $t02_siswa_list->RenderListOptions();
 // Render list options (header, left)
 $t02_siswa_list->ListOptions->Render("header", "left");
 ?>
-<?php if ($t02_siswa->id->Visible) { // id ?>
-	<?php if ($t02_siswa->SortUrl($t02_siswa->id) == "") { ?>
-		<th data-name="id"><div id="elh_t02_siswa_id" class="t02_siswa_id"><div class="ewTableHeaderCaption"><?php echo $t02_siswa->id->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="id"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t02_siswa->SortUrl($t02_siswa->id) ?>',1);"><div id="elh_t02_siswa_id" class="t02_siswa_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t02_siswa->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t02_siswa->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t02_siswa->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-        </div></div></th>
-	<?php } ?>
-<?php } ?>		
 <?php if ($t02_siswa->sekolah_id->Visible) { // sekolah_id ?>
 	<?php if ($t02_siswa->SortUrl($t02_siswa->sekolah_id) == "") { ?>
 		<th data-name="sekolah_id"><div id="elh_t02_siswa_sekolah_id" class="t02_siswa_sekolah_id"><div class="ewTableHeaderCaption"><?php echo $t02_siswa->sekolah_id->FldCaption() ?></div></div></th>
@@ -1964,21 +2006,13 @@ while ($t02_siswa_list->RecCnt < $t02_siswa_list->StopRec) {
 // Render list options (body, left)
 $t02_siswa_list->ListOptions->Render("body", "left", $t02_siswa_list->RowCnt);
 ?>
-	<?php if ($t02_siswa->id->Visible) { // id ?>
-		<td data-name="id"<?php echo $t02_siswa->id->CellAttributes() ?>>
-<span id="el<?php echo $t02_siswa_list->RowCnt ?>_t02_siswa_id" class="t02_siswa_id">
-<span<?php echo $t02_siswa->id->ViewAttributes() ?>>
-<?php echo $t02_siswa->id->ListViewValue() ?></span>
-</span>
-<a id="<?php echo $t02_siswa_list->PageObjName . "_row_" . $t02_siswa_list->RowCnt ?>"></a></td>
-	<?php } ?>
 	<?php if ($t02_siswa->sekolah_id->Visible) { // sekolah_id ?>
 		<td data-name="sekolah_id"<?php echo $t02_siswa->sekolah_id->CellAttributes() ?>>
 <span id="el<?php echo $t02_siswa_list->RowCnt ?>_t02_siswa_sekolah_id" class="t02_siswa_sekolah_id">
 <span<?php echo $t02_siswa->sekolah_id->ViewAttributes() ?>>
 <?php echo $t02_siswa->sekolah_id->ListViewValue() ?></span>
 </span>
-</td>
+<a id="<?php echo $t02_siswa_list->PageObjName . "_row_" . $t02_siswa_list->RowCnt ?>"></a></td>
 	<?php } ?>
 	<?php if ($t02_siswa->kelas_id->Visible) { // kelas_id ?>
 		<td data-name="kelas_id"<?php echo $t02_siswa->kelas_id->CellAttributes() ?>>

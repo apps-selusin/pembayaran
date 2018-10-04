@@ -598,14 +598,14 @@
     <menu id="3">
       <phrase id="menutext" value="Siswa" />
     </menu>
-    <menu id="9">
-      <phrase id="menutext" value="User Log" />
-    </menu>
     <menu id="5">
-      <phrase id="menutext" value="t 96 employees" />
+      <phrase id="menutext" value="User" />
     </menu>
     <menu id="6">
-      <phrase id="menutext" value="t 97 userlevels" />
+      <phrase id="menutext" value="Hak Akses" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="User Log" />
     </menu>
     <menu id="7">
       <phrase id="menutext" value="t 98 userlevelpermissions" />
@@ -640,10 +640,10 @@
         <phrase id="fldcaption" value="id" />
       </field>
       <field id="sekolah_id">
-        <phrase id="fldcaption" value="sekolah id" />
+        <phrase id="fldcaption" value="Sekolah" />
       </field>
       <field id="kelas_id">
-        <phrase id="fldcaption" value="kelas id" />
+        <phrase id="fldcaption" value="Kelas" />
       </field>
       <field id="nomor_induk">
         <phrase id="fldcaption" value="Nomor Induk" />
@@ -656,7 +656,7 @@
       <phrase id="tblcaption" value="Home" />
     </table>
     <table id="t96_employees">
-      <phrase id="tblcaption" value="t 96 employees" />
+      <phrase id="tblcaption" value="User" />
       <field id="employeeid">
         <phrase id="fldcaption" value="Employee ID" />
       </field>
@@ -732,7 +732,7 @@
       </field>
     </table>
     <table id="t97_userlevels">
-      <phrase id="tblcaption" value="t 97 userlevels" />
+      <phrase id="tblcaption" value="Hak Akses" />
       <field id="userlevelid">
         <phrase id="fldcaption" value="userlevelid" />
       </field>

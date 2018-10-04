@@ -1506,6 +1506,14 @@ class ct96_employees_list extends ct96_employees {
 		$item->ShowInDropDown = FALSE;
 		$item->ShowInButtonGroup = FALSE;
 
+		// "sequence"
+		$item = &$this->ListOptions->Add("sequence");
+		$item->CssStyle = "white-space: nowrap;";
+		$item->Visible = TRUE;
+		$item->OnLeft = TRUE; // Always on left
+		$item->ShowInDropDown = FALSE;
+		$item->ShowInButtonGroup = FALSE;
+
 		// Drop down button for ListOptions
 		$this->ListOptions->UseImageAndText = TRUE;
 		$this->ListOptions->UseDropDownButton = FALSE;
@@ -1526,6 +1534,10 @@ class ct96_employees_list extends ct96_employees {
 	function RenderListOptions() {
 		global $Security, $Language, $objForm;
 		$this->ListOptions->LoadDefault();
+
+		// "sequence"
+		$oListOpt = &$this->ListOptions->Items["sequence"];
+		$oListOpt->Body = ew_FormatSeqNo($this->RecCnt);
 
 		// "view"
 		$oListOpt = &$this->ListOptions->Items["view"];
@@ -2846,6 +2858,13 @@ ft96_employeeslistsrch.Lists["x_Activated"].Options = <?php echo json_encode($t9
 			$t96_employees_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
 		else
 			$t96_employees_list->setWarningMessage($Language->Phrase("NoRecord"));
+	}
+
+	// Audit trail on search
+	if ($t96_employees_list->AuditTrailOnSearch && $t96_employees_list->Command == "search" && !$t96_employees_list->RestoreSearch) {
+		$searchparm = ew_ServerVar("QUERY_STRING");
+		$searchsql = $t96_employees_list->getSessionWhere();
+		$t96_employees_list->WriteAuditTrailOnSearch($searchparm, $searchsql);
 	}
 $t96_employees_list->RenderOtherOptions();
 ?>
